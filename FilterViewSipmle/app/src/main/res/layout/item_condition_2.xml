@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ToggleButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tb"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:layout_weight="1"
+    android:gravity="center"
+    android:textOff="@null"
+    android:textOn="@null"
+    android:button="@null"
+    android:background="@drawable/selector_item_condition_background"
+    android:textColor="@drawable/selector_item_condition_text_color"/>
