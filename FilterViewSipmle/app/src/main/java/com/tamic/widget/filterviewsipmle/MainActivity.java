@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,9 +19,12 @@ import com.tamic.widget.filter.BaseFilterItem;
 import com.tamic.widget.filter.CategoryBar;
 import com.tamic.widget.filter.ConditionContainer;
 import com.tamic.widget.filter.DateSelectConditionItem;
+import com.tamic.widget.filter.FilterContainer;
+import com.tamic.widget.filter.FliterResultItem;
 import com.tamic.widget.filter.GroupFilterItem;
 import com.tamic.widget.filter.ListFilterBean;
 import com.tamic.widget.filter.NewConditionItem;
+import com.tamic.widget.filter.RegionContainer;
 import com.tamic.widget.filter.SorterContainer;
 
 import java.io.BufferedReader;
@@ -72,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     mFilterRoot = container.getConditionItem();
                 }
 
-                onFilterResult(container);
+                onFilterHandleResult(container);
             }
 
             @Override
@@ -103,6 +107,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void onFilterHandleResult(ConditionContainer container) {
+
+        FliterResultItem item = new FliterResultItem();
+
+        if (container instanceof SorterContainer) {
+            mSortRoot = container.getConditionItem();
+            NewConditionItem lv0 = mSortRoot.firstSelectedSubItem();
+            if (lv0.isEmpty()) {
+                return;
+            }
+            onResult(item.createResult(lv0));
+        }
+
+        if (container instanceof FilterContainer) {
+            mFilterRoot = container.getConditionItem();
+
+            List<NewConditionItem> lv0 = mFilterRoot.selectedSubItems();
+            if (lv0.isEmpty()) {
+                return;
+            }
+            onResult(item.createResult(mFilterRoot));
+        }
+
+        if (container instanceof RegionContainer) {
+            mRegionRoot = container.getConditionItem();
+            if (mRegionRoot.selected) {
+                onResult(item.createResult(mRegionRoot));
+            }
+        }
+    }
+
 
 
     protected void onFilterResult(ConditionContainer container) {
@@ -173,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 
     /**
      * 设置筛选数据
@@ -358,6 +396,35 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return "";
+    }
+
+    protected void onResult(FliterResultItem resultItem) {
+
+        if (resultItem == null) {
+        }
+
+        if (resultItem.isEmpty()) {
+            Log.d("Tag", "lv0: "+ resultItem.name);
+            Toast.makeText(MainActivity.this, String.valueOf(resultItem.id), Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        for (FliterResultItem item : resultItem.subItems()) {
+
+            if (item.isEmpty()) {
+                continue;
+            }
+            for (FliterResultItem item1 : item.subItems()) {
+                Log.d("Tag", "lv1: "+ item.name);
+                Log.d("Tag", "lv1: "+ item1.name);
+                Toast.makeText(MainActivity.this, String.valueOf(item.id), Toast.LENGTH_SHORT).show();
+                for (FliterResultItem item2 : item1.subItems()) {
+                    Log.d("Tag", "lv2: "+ item2.name);
+                    Toast.makeText(MainActivity.this, String.valueOf(item.id), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
 }
